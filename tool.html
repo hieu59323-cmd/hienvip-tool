@@ -7,13 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  background-color: #080f0d !important;
-  color: #00ffaa;
-  font-family: 'Share Tech Mono', monospace;
-  min-height: 100vh;
-  padding: 20px 16px 40px;
-}
+html, body { background-color: #080f0d !important; color: #00ffaa; font-family: 'Share Tech Mono', monospace; min-height: 100vh; padding: 20px 16px 40px; }
 .header { text-align: center; margin-bottom: 28px; }
 .header h1 { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #00ffaa; text-shadow: 0 0 20px #00ffaa88; letter-spacing: 3px; }
 .header p { font-size: 11px; color: #00ffaa66; margin-top: 4px; letter-spacing: 2px; }
@@ -22,9 +16,10 @@ html, body {
 label { font-size: 11px; color: #00ffaa99; display: block; margin-bottom: 6px; letter-spacing: 1px; }
 input, select { width: 100%; background-color: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; color: #00ffaa; font-family: 'Share Tech Mono', monospace; font-size: 13px; padding: 10px 12px; margin-bottom: 12px; outline: none; -webkit-appearance: none; appearance: none; }
 select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ffaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
-.btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; cursor: pointer; }
+.btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; cursor: pointer; margin-bottom: 8px; }
 .btn-green { background: linear-gradient(135deg, #00ffaa, #00cc88); color: #080f0d; }
-.btn-red { background: transparent; border: 1px solid #ff4466; color: #ff4466; font-size: 11px; padding: 7px 12px; width: auto; }
+.btn-red { background: transparent; border: 1px solid #ff4466; color: #ff4466; font-size: 11px; padding: 7px 12px; width: auto; margin-bottom: 0; }
+.btn-gray { background: transparent; border: 1px solid #0a2e22; color: #00ffaa66; font-size: 10px; padding: 6px; margin-bottom: 0; }
 .hwid-list { display: flex; flex-direction: column; gap: 10px; }
 .hwid-item { background-color: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; padding: 12px; }
 .hwid-val { font-size: 11px; color: #00ffaa; word-break: break-all; line-height: 1.5; margin: 6px 0; }
@@ -40,6 +35,7 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .loading { text-align: center; color: #00ffaa55; font-size: 12px; padding: 16px 0; }
 .status-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 11px; color: #00ffaa66; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #00ffaa; box-shadow: 0 0 6px #00ffaa; }
+.saved-tag { font-size: 10px; color: #00ffaa44; margin-top: -8px; margin-bottom: 8px; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #0d1a16; border: 1px solid #00cc88; color: #00ffaa; padding: 10px 20px; border-radius: 8px; font-size: 12px; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { border-color: #ff4466; color: #ff4466; }
@@ -54,9 +50,12 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   <div class="card-title">⚙ CÀI ĐẶT API</div>
   <label>PASTEBIN API KEY</label>
   <input type="password" id="apiKey" placeholder="Nhập API key của bạn...">
+  <div class="saved-tag" id="apiSavedTag"></div>
   <label>PASTE KEY (ID paste HWID)</label>
   <input type="text" id="pasteKey" placeholder="vd: 5tmLUfKp">
-  <button class="btn btn-green" onclick="loadHWIDs()">🔗 KẾT NỐI & TẢI HWID</button>
+  <div class="saved-tag" id="pasteSavedTag"></div>
+  <button class="btn btn-green" onclick="saveAndConnect()">🔗 LƯU & KẾT NỐI</button>
+  <button class="btn btn-gray" onclick="clearSaved()">🗑 Xoá thông tin đã lưu</button>
 </div>
 <div class="card">
   <div class="card-title">➕ THÊM HWID MỚI</div>
@@ -83,6 +82,44 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 const PROXY = "https://api.allorigins.win/raw?url=";
 let hwidData = [];
 
+// Tự load key đã lưu khi mở trang
+window.onload = function() {
+  const savedApi = localStorage.getItem('hv_api');
+  const savedPaste = localStorage.getItem('hv_paste');
+  if (savedApi) {
+    document.getElementById('apiKey').value = savedApi;
+    document.getElementById('apiSavedTag').textContent = '✅ Đã lưu';
+  }
+  if (savedPaste) {
+    document.getElementById('pasteKey').value = savedPaste;
+    document.getElementById('pasteSavedTag').textContent = '✅ Đã lưu';
+    loadHWIDs();
+  }
+};
+
+function saveAndConnect() {
+  const api = document.getElementById('apiKey').value.trim();
+  const paste = document.getElementById('pasteKey').value.trim();
+  if (!api) return showToast('Nhập API key trước!', true);
+  if (!paste) return showToast('Nhập Paste Key trước!', true);
+  localStorage.setItem('hv_api', api);
+  localStorage.setItem('hv_paste', paste);
+  document.getElementById('apiSavedTag').textContent = '✅ Đã lưu';
+  document.getElementById('pasteSavedTag').textContent = '✅ Đã lưu';
+  showToast('✅ Đã lưu! Đang kết nối...');
+  loadHWIDs();
+}
+
+function clearSaved() {
+  localStorage.removeItem('hv_api');
+  localStorage.removeItem('hv_paste');
+  document.getElementById('apiKey').value = '';
+  document.getElementById('pasteKey').value = '';
+  document.getElementById('apiSavedTag').textContent = '';
+  document.getElementById('pasteSavedTag').textContent = '';
+  showToast('✅ Đã xoá thông tin lưu!');
+}
+
 function toggleDate() {
   document.getElementById('expireDate').style.display =
     document.getElementById('expireType').value === 'date' ? 'block' : 'none';
@@ -103,7 +140,7 @@ function isExpired(d) {
 
 async function loadHWIDs() {
   const key = document.getElementById('pasteKey').value.trim();
-  if (!key) return showToast('Nhập Paste Key trước!', true);
+  if (!key) return;
   document.getElementById('hwidList').innerHTML = '<div class="loading">ĐANG TẢI...</div>';
   document.getElementById('statusText').textContent = 'Đang kết nối...';
   try {
