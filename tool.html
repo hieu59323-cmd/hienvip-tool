@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIEN VIP - HWID Manager</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+–green: #00ffaa;
+–green2: #00cc88;
+–dark: #080f0d;
+–card: #0d1a16;
+–border: #0a2e22;
+–red: #ff4466;
+–yellow: #ffcc00;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: var(–dark);
+color: var(–green);
+font-family: ‘Share Tech Mono’, monospace;
+min-height: 100vh;
+padding: 20px 16px 40px;
+background-image:
+radial-gradient(ellipse at 20% 20%, #00ffaa08 0%, transparent 60%),
+radial-gradient(ellipse at 80% 80%, #00cc8808 0%, transparent 60%);
+}
+
+.header {
+text-align: center;
+margin-bottom: 28px;
+}
+
+.header h1 {
+font-family: ‘Orbitron’, sans-serif;
+font-size: 22px;
+font-weight: 900;
+color: var(–green);
+text-shadow: 0 0 20px #00ffaa88;
+letter-spacing: 3px;
+}
+
+.header p {
+font-size: 11px;
+color: #00ffaa66;
+margin-top: 4px;
+letter-spacing: 2px;
+}
+
+.card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 18px;
+margin-bottom: 16px;
+box-shadow: 0 0 20px #00ffaa0a;
+}
+
+.card-title {
+font-family: ‘Orbitron’, sans-serif;
+font-size: 11px;
+color: var(–green2);
+letter-spacing: 2px;
+margin-bottom: 14px;
+text-transform: uppercase;
+}
+
+label {
+font-size: 11px;
+color: #00ffaa99;
+display: block;
+margin-bottom: 6px;
+letter-spacing: 1px;
+}
+
+input, select {
+width: 100%;
+background: #060e0b;
+border: 1px solid #0a2e22;
+border-radius: 8px;
+color: var(–green);
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+padding: 10px 12px;
+margin-bottom: 12px;
+outline: none;
+transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+border-color: var(–green2);
+box-shadow: 0 0 10px #00ffaa22;
+}
+
+select option { background: #0d1a16; }
+
+.btn {
+width: 100%;
+padding: 12px;
+border-radius: 8px;
+border: none;
+font-family: ‘Orbitron’, sans-serif;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 2px;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.btn-primary {
+background: linear-gradient(135deg, #00ffaa, #00cc88);
+color: #080f0d;
+}
+
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-danger {
+background: transparent;
+border: 1px solid var(–red);
+color: var(–red);
+font-size: 11px;
+padding: 7px;
+width: auto;
+margin-top: 4px;
+}
+
+.hwid-list { display: flex; flex-direction: column; gap: 10px; }
+
+.hwid-item {
+background: #060e0b;
+border: 1px solid #0a2e22;
+border-radius: 8px;
+padding: 12px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.hwid-item .hwid-val {
+font-size: 11px;
+color: var(–green);
+word-break: break-all;
+line-height: 1.5;
+}
+
+.hwid-item .hwid-date {
+font-size: 11px;
+color: var(–yellow);
+}
+
+.hwid-item .hwid-date.forever { color: var(–green2); }
+
+.hwid-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.badge {
+display: inline-block;
+padding: 2px 8px;
+border-radius: 4px;
+font-size: 10px;
+letter-spacing: 1px;
+}
+
+.badge-active { background: #00ffaa22; color: var(–green); border: 1px solid #00ffaa44; }
+.badge-expired { background: #ff446622; color: var(–red); border: 1px solid #ff446644; }
+.badge-forever { background: #00cc8822; color: var(–green2); border: 1px solid #00cc8844; }
+
+.toast {
+position: fixed;
+bottom: 24px;
+left: 50%;
+transform: translateX(-50%) translateY(80px);
+background: var(–card);
+border: 1px solid var(–green2);
+color: var(–green);
+padding: 10px 20px;
+border-radius: 8px;
+font-size: 12px;
+letter-spacing: 1px;
+transition: transform 0.3s;
+z-index: 999;
+white-space: nowrap;
+box-shadow: 0 0 20px #00ffaa33;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: var(–red); color: var(–red); }
+
+.divider {
+border: none;
+border-top: 1px solid #0a2e22;
+margin: 4px 0 14px;
+}
+
+.empty {
+text-align: center;
+color: #00ffaa33;
+font-size: 12px;
+padding: 20px 0;
+letter-spacing: 1px;
+}
+
+.loading {
+text-align: center;
+color: #00ffaa55;
+font-size: 12px;
+padding: 16px 0;
+animation: blink 1s infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.status-bar {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 14px;
+font-size: 11px;
+color: #00ffaa66;
+}
+
+.dot {
+width: 8px; height: 8px;
+border-radius: 50%;
+background: var(–green);
+box-shadow: 0 0 6px var(–green);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ HIEN VIP</h1>
+  <p>HWID MANAGER v1.0</p>
+</div>
+
+<!-- API Config -->
+
+<div class="card" id="configCard">
+  <div class="card-title">⚙ CÀI ĐẶT API</div>
+  <label>PASTEBIN API KEY</label>
+  <input type="password" id="apiKey" placeholder="Nhập API key của bạn..." />
+  <label>PASTE KEY (ID của paste HWID)</label>
+  <input type="text" id="pasteKey" placeholder="vd: 5tmLUfKp" />
+  <button class="btn btn-primary" onclick="loadHWIDs()">🔗 KẾT NỐI & TẢI HWID</button>
+</div>
+
+<!-- Add HWID -->
+
+<div class="card">
+  <div class="card-title">➕ THÊM HWID MỚI</div>
+  <label>HWID</label>
+  <input type="text" id="newHWID" placeholder="Nhập HWID của user..." />
+  <label>THỜI HẠN</label>
+  <select id="expireType" onchange="toggleDateInput()">
+    <option value="forever">♾ Vĩnh viễn</option>
+    <option value="7">📅 7 Ngày</option>
+    <option value="30">📅 30 Ngày</option>
+    <option value="date">📅 Chọn ngày hết hạn</option>
+  </select>
+  <input type="date" id="expireDate" style="display:none;" />
+  <button class="btn btn-primary" onclick="addHWID()">✚ THÊM HWID</button>
+</div>
+
+<!-- HWID List -->
+
+<div class="card">
+  <div class="card-title">📋 DANH SÁCH HWID</div>
+  <div class="status-bar">
+    <div class="dot"></div>
+    <span id="statusText">Chưa kết nối</span>
+  </div>
+  <hr class="divider">
+  <div id="hwidList"><div class="empty">Nhập API key và kết nối để xem danh sách</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PROXY = "https://api.allorigins.win/raw?url=";
+  let hwidData = [];
+
+  function toggleDateInput() {
+    const t = document.getElementById('expireType').value;
+    document.getElementById('expireDate').style.display = t === 'date' ? 'block' : 'none';
+  }
+
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => t.className = 'toast', 2500);
+  }
+
+  function getApiKey() { return document.getElementById('apiKey').value.trim(); }
+  function getPasteKey() { return document.getElementById('pasteKey').value.trim(); }
+
+  function isExpired(dateStr) {
+    if (dateStr === 'forever') return false;
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const today = new Date();
+    const exp = new Date(y, m - 1, d);
+    return today > exp;
+  }
+
+  async function loadHWIDs() {
+    const key = getPasteKey();
+    if (!key) return showToast('Nhập Paste Key trước!', true);
+
+    document.getElementById('hwidList').innerHTML = '<div class="loading">ĐANG TẢI...</div>';
+    document.getElementById('statusText').textContent = 'Đang kết nối...';
+
+    try {
+      const url = `https://pastebin.com/raw/${key}`;
+      const res = await fetch(PROXY + encodeURIComponent(url));
+      const text = await res.text();
+
+      hwidData = [];
+      text.split('\n').forEach(line => {
+        line = line.trim();
+        if (!line) return;
+        const parts = line.split('|');
+        if (parts.length >= 2) {
+          hwidData.push({ hwid: parts[0], date: parts[1] });
+        } else if (parts.length === 1) {
+          hwidData.push({ hwid: parts[0], date: 'forever' });
+        }
+      });
+
+      renderList();
+      document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+      showToast(`✅ Tải xong ${hwidData.length} HWID!`);
+    } catch (e) {
+      document.getElementById('hwidList').innerHTML = '<div class="empty">Lỗi tải dữ liệu!</div>';
+      document.getElementById('statusText').textContent = 'Lỗi kết nối';
+      showToast('Lỗi tải HWID!', true);
+    }
+  }
+
+  function renderList() {
+    const el = document.getElementById('hwidList');
+    if (hwidData.length === 0) {
+      el.innerHTML = '<div class="empty">Chưa có HWID nào</div>';
+      return;
+    }
+
+    el.innerHTML = '<div class="hwid-list">' + hwidData.map((item, i) => {
+      const expired = isExpired(item.date);
+      const forever = item.date === 'forever';
+      const badge = forever
+        ? '<span class="badge badge-forever">FOREVER</span>'
+        : expired
+          ? '<span class="badge badge-expired">HẾT HẠN</span>'
+          : '<span class="badge badge-active">ACTIVE</span>';
+
+      const dateText = forever
+        ? '<span class="hwid-date forever">♾ Vĩnh viễn</span>'
+        : `<span class="hwid-date">📅 ${item.date}${expired ? ' (đã hết)' : ''}</span>`;
+
+      return `
+        <div class="hwid-item">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            ${badge}
+            <div class="hwid-actions">
+              <button class="btn btn-danger" onclick="removeHWID(${i})">🗑 XOÁ</button>
+            </div>
+          </div>
+          <div class="hwid-val">${item.hwid}</div>
+          ${dateText}
+        </div>`;
+    }).join('') + '</div>';
+  }
+
+  async function saveToпаstebin() {
+    const apiKey = getApiKey();
+    const pasteKey = getPasteKey();
+    if (!apiKey) { showToast('Nhập API key trước!', true); return false; }
+    if (!pasteKey) { showToast('Nhập Paste Key trước!', true); return false; }
+
+    const content = hwidData.map(item => `${item.hwid}|${item.date}`).join('\n');
+
+    try {
+      const body = new URLSearchParams({
+        api_dev_key: apiKey,
+        api_option: 'paste',
+        api_paste_code: content,
+        api_paste_key: pasteKey,
+        api_paste_name: 'HWID',
+      });
+
+      // Dùng proxy để bypass CORS
+      const res = await fetch(PROXY + encodeURIComponent('https://pastebin.com/api/api_post.php'), {
+        method: 'POST',
+        body: body,
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function addHWID() {
+    const hwid = document.getElementById('newHWID').value.trim();
+    if (!hwid) return showToast('Nhập HWID trước!', true);
+
+    const expType = document.getElementById('expireType').value;
+    let date = 'forever';
+
+    if (expType === '7' || expType === '30') {
+      const days = parseInt(expType);
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      date = `${y}-${m}-${day}`;
+    } else if (expType === 'date') {
+      date = document.getElementById('expireDate').value;
+      if (!date) return showToast('Chọn ngày hết hạn!', true);
+    }
+
+    if (hwidData.find(x => x.hwid === hwid)) {
+      return showToast('HWID này đã tồn tại!', true);
+    }
+
+    hwidData.push({ hwid, date });
+    renderList();
+    document.getElementById('newHWID').value = '';
+
+    showToast('⏳ Đang lưu lên Pastebin...');
+    const ok = await saveToPastebin();
+    if (ok) {
+      showToast('✅ Đã thêm HWID thành công!');
+      document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+    } else {
+      showToast('⚠️ Lưu lên Pastebin thất bại, thử lại!', true);
+    }
+  }
+
+  async function removeHWID(index) {
+    if (!confirm(`Xoá HWID này?\n${hwidData[index].hwid}`)) return;
+
+    hwidData.splice(index, 1);
+    renderList();
+
+    showToast('⏳ Đang lưu...');
+    const ok = await saveToPastebin();
+    if (ok) {
+      showToast('✅ Đã xoá HWID!');
+      document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+    } else {
+      showToast('⚠️ Lưu thất bại!', true);
+    }
+  }
+
+  async function saveToPastebin() {
+    const apiKey = getApiKey();
+    const pasteKey = getPasteKey();
+    if (!apiKey || !pasteKey) return false;
+
+    const content = hwidData.map(item => `${item.hwid}|${item.date}`).join('\n');
+
+    try {
+      const formData = new FormData();
+      formData.append('api_dev_key', apiKey);
+      formData.append('api_option', 'paste');
+      formData.append('api_paste_code', content);
+      formData.append('api_paste_key', pasteKey);
+      formData.append('api_paste_name', 'HWID');
+
+      const res = await fetch('https://pastebin.com/api/api_post.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+</script>
+
+</body>
+</html>
