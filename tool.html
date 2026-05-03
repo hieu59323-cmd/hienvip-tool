@@ -4,231 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HIEN VIP - HWID Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background-color: #080f0d !important; color: #00ffaa; font-family: 'Share Tech Mono', monospace; min-height: 100vh; padding: 20px 16px 40px; }
-.header { text-align: center; margin-bottom: 28px; }
-.header h1 { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: #00ffaa; text-shadow: 0 0 20px #00ffaa88; letter-spacing: 3px; }
-.header p { font-size: 11px; color: #00ffaa66; margin-top: 4px; letter-spacing: 2px; }
-.card { background-color: #0d1a16; border: 1px solid #0a2e22; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
-.card-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #00cc88; letter-spacing: 2px; margin-bottom: 14px; text-transform: uppercase; }
-label { font-size: 11px; color: #00ffaa99; display: block; margin-bottom: 6px; letter-spacing: 1px; }
-input, select { width: 100%; background-color: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; color: #00ffaa; font-family: 'Share Tech Mono', monospace; font-size: 13px; padding: 10px 12px; margin-bottom: 12px; outline: none; -webkit-appearance: none; appearance: none; }
-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ffaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
-.btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; cursor: pointer; margin-bottom: 8px; }
-.btn-green { background: linear-gradient(135deg, #00ffaa, #00cc88); color: #080f0d; }
-.btn-red { background: transparent; border: 1px solid #ff4466; color: #ff4466; font-size: 11px; padding: 7px 12px; width: auto; margin-bottom: 0; }
-.btn-gray { background: transparent; border: 1px solid #0a2e22; color: #00ffaa66; font-size: 10px; padding: 6px; margin-bottom: 0; }
-.hwid-list { display: flex; flex-direction: column; gap: 10px; }
-.hwid-item { background-color: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; padding: 12px; }
-.hwid-val { font-size: 11px; color: #00ffaa; word-break: break-all; line-height: 1.5; margin: 6px 0; }
-.hwid-date { font-size: 11px; color: #ffcc00; }
-.hwid-date-forever { font-size: 11px; color: #00cc88; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; letter-spacing: 1px; }
-.badge-active { background: #00ffaa22; color: #00ffaa; border: 1px solid #00ffaa44; }
-.badge-expired { background: #ff446622; color: #ff4466; border: 1px solid #ff446644; }
-.badge-forever { background: #00cc8822; color: #00cc88; border: 1px solid #00cc8844; }
-.row { display: flex; justify-content: space-between; align-items: center; }
-.divider { border: none; border-top: 1px solid #0a2e22; margin: 4px 0 14px; }
-.empty { text-align: center; color: #00ffaa33; font-size: 12px; padding: 20px 0; }
-.loading { text-align: center; color: #00ffaa55; font-size: 12px; padding: 16px 0; }
-.status-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 11px; color: #00ffaa66; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #00ffaa; box-shadow: 0 0 6px #00ffaa; }
-.saved-tag { font-size: 10px; color: #00ffaa44; margin-top: -8px; margin-bottom: 8px; }
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #0d1a16; border: 1px solid #00cc88; color: #00ffaa; padding: 10px 20px; border-radius: 8px; font-size: 12px; transition: transform 0.3s; z-index: 999; white-space: nowrap; }
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.error { border-color: #ff4466; color: #ff4466; }
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+  :root {
+    --green: #00ffaa; --green2: #00cc88; --dark: #080f0d;
+    --card: #0d1a16; --border: #0a2e22; --red: #ff4466; --yellow: #ffcc00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--dark); color: var(--green); font-family: 'Share Tech Mono', monospace; min-height: 100vh; padding: 20px 16px 40px; background-image: radial-gradient(ellipse at 20% 20%, #00ffaa08 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, #00cc8808 0%, transparent 60%); }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header h1 { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: var(--green); text-shadow: 0 0 20px #00ffaa88; letter-spacing: 3px; }
+  .header p { font-size: 11px; color: #00ffaa66; margin-top: 4px; letter-spacing: 2px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; box-shadow: 0 0 20px #00ffaa0a; }
+  .card-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--green2); letter-spacing: 2px; margin-bottom: 14px; text-transform: uppercase; }
+  label { font-size: 11px; color: #00ffaa99; display: block; margin-bottom: 6px; letter-spacing: 1px; }
+  input, select { width: 100%; background: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 13px; padding: 10px 12px; margin-bottom: 12px; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus { border-color: var(--green2); box-shadow: 0 0 10px #00ffaa22; }
+  select option { background: #0d1a16; }
+  .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: linear-gradient(135deg, #00ffaa, #00cc88); color: #080f0d; }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); font-size: 11px; padding: 7px 12px; width: auto; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .btn-danger:hover { background: #ff446622; }
+  .hwid-list { display: flex; flex-direction: column; gap: 10px; }
+  .hwid-item { background: #060e0b; border: 1px solid #0a2e22; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .hwid-val { font-size: 11px; color: var(--green); word-break: break-all; line-height: 1.5; }
+  .hwid-date { font-size: 11px; color: var(--yellow); }
+  .hwid-date.forever { color: var(--green2); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; letter-spacing: 1px; }
+  .badge-active { background: #00ffaa22; color: var(--green); border: 1px solid #00ffaa44; }
+  .badge-expired { background: #ff446622; color: var(--red); border: 1px solid #ff446644; }
+  .badge-forever { background: #00cc8822; color: var(--green2); border: 1px solid #00cc8844; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--card); border: 1px solid var(--green2); color: var(--green); padding: 10px 20px; border-radius: 8px; font-size: 12px; letter-spacing: 1px; transition: transform 0.3s; z-index: 999; white-space: nowrap; box-shadow: 0 0 20px #00ffaa33; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  .divider { border: none; border-top: 1px solid #0a2e22; margin: 4px 0 14px; }
+  .empty { text-align: center; color: #00ffaa33; font-size: 12px; padding: 20px 0; letter-spacing: 1px; }
+  .loading { text-align: center; color: #00ffaa55; font-size: 12px; padding: 16px 0; animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .status-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 11px; color: #00ffaa66; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 </style>
 </head>
 <body>
 <div class="header">
   <h1>⚡ HIEN VIP</h1>
-  <p>HWID MANAGER v1.0</p>
-</div>
-<div class="card">
-  <div class="card-title">⚙ CÀI ĐẶT API</div>
-  <label>PASTEBIN API KEY</label>
-  <input type="password" id="apiKey" placeholder="Nhập API key của bạn...">
-  <div class="saved-tag" id="apiSavedTag"></div>
-  <label>PASTE KEY (ID paste HWID)</label>
-  <input type="text" id="pasteKey" placeholder="vd: 5tmLUfKp">
-  <div class="saved-tag" id="pasteSavedTag"></div>
-  <button class="btn btn-green" onclick="saveAndConnect()">🔗 LƯU & KẾT NỐI</button>
-  <button class="btn btn-gray" onclick="clearSaved()">🗑 Xoá thông tin đã lưu</button>
+  <p>HWID MANAGER v2.0 — JSONBIN</p>
 </div>
 <div class="card">
   <div class="card-title">➕ THÊM HWID MỚI</div>
   <label>HWID</label>
-  <input type="text" id="newHWID" placeholder="Nhập HWID của user...">
+  <input type="text" id="newHWID" placeholder="Nhập HWID của user..." />
   <label>THỜI HẠN</label>
-  <select id="expireType" onchange="toggleDate()">
+  <select id="expireType" onchange="toggleDateInput()">
     <option value="forever">♾ Vĩnh viễn</option>
     <option value="7">📅 7 Ngày</option>
     <option value="30">📅 30 Ngày</option>
-    <option value="date">📅 Chọn ngày</option>
+    <option value="date">📅 Chọn ngày hết hạn</option>
   </select>
-  <input type="date" id="expireDate" style="display:none;">
-  <button class="btn btn-green" onclick="addHWID()">✚ THÊM HWID</button>
+  <input type="date" id="expireDate" style="display:none;" />
+  <button class="btn btn-primary" onclick="addHWID()">✚ THÊM HWID</button>
 </div>
 <div class="card">
   <div class="card-title">📋 DANH SÁCH HWID</div>
-  <div class="status-bar"><div class="dot"></div><span id="statusText">Chưa kết nối</span></div>
+  <div class="status-bar"><div class="dot"></div><span id="statusText">Đang tải...</span></div>
   <hr class="divider">
-  <div id="hwidList"><div class="empty">Nhập API key và kết nối để xem danh sách</div></div>
+  <div id="hwidList"><div class="loading">ĐANG TẢI...</div></div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const PROXY = "https://api.allorigins.win/raw?url=";
-let hwidData = [];
+  const BIN_ID = '69f70bdcaaba8821976677a0';
+  const MASTER_KEY = '$2a$10$3dZhQhscBbWpVvSlJLEfve1EAcLFMYAX/TAw06LndJOcKfOLQe2k2';
+  const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+  let hwidData = [];
 
-// Tự load key đã lưu khi mở trang
-window.onload = function() {
-  const savedApi = localStorage.getItem('hv_api');
-  const savedPaste = localStorage.getItem('hv_paste');
-  if (savedApi) {
-    document.getElementById('apiKey').value = savedApi;
-    document.getElementById('apiSavedTag').textContent = '✅ Đã lưu';
+  function toggleDateInput() {
+    document.getElementById('expireDate').style.display =
+      document.getElementById('expireType').value === 'date' ? 'block' : 'none';
   }
-  if (savedPaste) {
-    document.getElementById('pasteKey').value = savedPaste;
-    document.getElementById('pasteSavedTag').textContent = '✅ Đã lưu';
-    loadHWIDs();
+
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => t.className = 'toast', 2500);
   }
-};
 
-function saveAndConnect() {
-  const api = document.getElementById('apiKey').value.trim();
-  const paste = document.getElementById('pasteKey').value.trim();
-  if (!api) return showToast('Nhập API key trước!', true);
-  if (!paste) return showToast('Nhập Paste Key trước!', true);
-  localStorage.setItem('hv_api', api);
-  localStorage.setItem('hv_paste', paste);
-  document.getElementById('apiSavedTag').textContent = '✅ Đã lưu';
-  document.getElementById('pasteSavedTag').textContent = '✅ Đã lưu';
-  showToast('✅ Đã lưu! Đang kết nối...');
-  loadHWIDs();
-}
+  function isExpired(dateStr) {
+    if (dateStr === 'forever') return false;
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date() > new Date(y, m - 1, d);
+  }
 
-function clearSaved() {
-  localStorage.removeItem('hv_api');
-  localStorage.removeItem('hv_paste');
-  document.getElementById('apiKey').value = '';
-  document.getElementById('pasteKey').value = '';
-  document.getElementById('apiSavedTag').textContent = '';
-  document.getElementById('pasteSavedTag').textContent = '';
-  showToast('✅ Đã xoá thông tin lưu!');
-}
+  async function loadHWIDs() {
+    try {
+      const res = await fetch(API_URL + '/latest', { headers: { 'X-Master-Key': MASTER_KEY } });
+      const data = await res.json();
+      hwidData = data.record.hwids || [];
+      renderList();
+      document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+    } catch (e) {
+      document.getElementById('hwidList').innerHTML = '<div class="empty">Lỗi tải dữ liệu!</div>';
+      document.getElementById('statusText').textContent = 'Lỗi kết nối';
+    }
+  }
 
-function toggleDate() {
-  document.getElementById('expireDate').style.display =
-    document.getElementById('expireType').value === 'date' ? 'block' : 'none';
-}
+  async function saveHWIDs() {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+        body: JSON.stringify({ hwids: hwidData })
+      });
+      return res.ok;
+    } catch (e) { return false; }
+  }
 
-function showToast(msg, err) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (err ? ' error' : '');
-  setTimeout(() => t.className = 'toast', 2500);
-}
+  function renderList() {
+    const el = document.getElementById('hwidList');
+    if (hwidData.length === 0) { el.innerHTML = '<div class="empty">Chưa có HWID nào</div>'; return; }
+    el.innerHTML = '<div class="hwid-list">' + hwidData.map((item, i) => {
+      const expired = isExpired(item.date);
+      const forever = item.date === 'forever';
+      const badge = forever ? '<span class="badge badge-forever">FOREVER</span>'
+        : expired ? '<span class="badge badge-expired">HẾT HẠN</span>'
+        : '<span class="badge badge-active">ACTIVE</span>';
+      const dateText = forever ? '<span class="hwid-date forever">♾ Vĩnh viễn</span>'
+        : `<span class="hwid-date">📅 ${item.date}${expired ? ' (đã hết)' : ''}</span>`;
+      return `<div class="hwid-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          ${badge}<button class="btn-danger" onclick="removeHWID(${i})">🗑 XOÁ</button>
+        </div>
+        <div class="hwid-val">${item.hwid}</div>${dateText}
+      </div>`;
+    }).join('') + '</div>';
+  }
 
-function isExpired(d) {
-  if (d === 'forever') return false;
-  const [y,m,day] = d.split('-').map(Number);
-  return new Date() > new Date(y, m-1, day);
-}
-
-async function loadHWIDs() {
-  const key = document.getElementById('pasteKey').value.trim();
-  if (!key) return;
-  document.getElementById('hwidList').innerHTML = '<div class="loading">ĐANG TẢI...</div>';
-  document.getElementById('statusText').textContent = 'Đang kết nối...';
-  try {
-    const res = await fetch(PROXY + encodeURIComponent('https://pastebin.com/raw/' + key));
-    const text = await res.text();
-    hwidData = [];
-    text.split('\n').forEach(line => {
-      line = line.trim();
-      if (!line) return;
-      const parts = line.split('|');
-      hwidData.push({ hwid: parts[0], date: parts[1] || 'forever' });
-    });
+  async function addHWID() {
+    const hwid = document.getElementById('newHWID').value.trim();
+    if (!hwid) return showToast('Nhập HWID trước!', true);
+    const expType = document.getElementById('expireType').value;
+    let date = 'forever';
+    if (expType === '7' || expType === '30') {
+      const d = new Date(); d.setDate(d.getDate() + parseInt(expType));
+      date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    } else if (expType === 'date') {
+      date = document.getElementById('expireDate').value;
+      if (!date) return showToast('Chọn ngày hết hạn!', true);
+    }
+    if (hwidData.find(x => x.hwid === hwid)) return showToast('HWID này đã tồn tại!', true);
+    hwidData.push({ hwid, date });
     renderList();
-    document.getElementById('statusText').textContent = 'Đã kết nối — ' + hwidData.length + ' HWID';
-    showToast('✅ Tải xong ' + hwidData.length + ' HWID!');
-  } catch(e) {
-    document.getElementById('hwidList').innerHTML = '<div class="empty">Lỗi tải dữ liệu!</div>';
-    document.getElementById('statusText').textContent = 'Lỗi kết nối';
-    showToast('Lỗi tải HWID!', true);
+    document.getElementById('newHWID').value = '';
+    document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+    showToast('⏳ Đang lưu...');
+    const ok = await saveHWIDs();
+    showToast(ok ? '✅ Đã thêm HWID thành công!' : '⚠️ Lưu thất bại!', !ok);
   }
-}
 
-function renderList() {
-  const el = document.getElementById('hwidList');
-  if (!hwidData.length) { el.innerHTML = '<div class="empty">Chưa có HWID nào</div>'; return; }
-  el.innerHTML = '<div class="hwid-list">' + hwidData.map((item, i) => {
-    const exp = isExpired(item.date), forever = item.date === 'forever';
-    const badge = forever ? '<span class="badge badge-forever">FOREVER</span>'
-      : exp ? '<span class="badge badge-expired">HẾT HẠN</span>'
-      : '<span class="badge badge-active">ACTIVE</span>';
-    const dateHtml = forever
-      ? '<div class="hwid-date-forever">♾ Vĩnh viễn</div>'
-      : '<div class="hwid-date">📅 ' + item.date + (exp ? ' (đã hết)' : '') + '</div>';
-    return '<div class="hwid-item"><div class="row">' + badge +
-      '<button class="btn btn-red" onclick="removeHWID(' + i + ')">🗑 XOÁ</button></div>' +
-      '<div class="hwid-val">' + item.hwid + '</div>' + dateHtml + '</div>';
-  }).join('') + '</div>';
-}
-
-async function addHWID() {
-  const hwid = document.getElementById('newHWID').value.trim();
-  if (!hwid) return showToast('Nhập HWID trước!', true);
-  const expType = document.getElementById('expireType').value;
-  let date = 'forever';
-  if (expType === '7' || expType === '30') {
-    const d = new Date();
-    d.setDate(d.getDate() + parseInt(expType));
-    date = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  } else if (expType === 'date') {
-    date = document.getElementById('expireDate').value;
-    if (!date) return showToast('Chọn ngày hết hạn!', true);
+  async function removeHWID(index) {
+    if (!confirm(`Xoá HWID này?\n${hwidData[index].hwid}`)) return;
+    hwidData.splice(index, 1);
+    renderList();
+    document.getElementById('statusText').textContent = `Đã kết nối — ${hwidData.length} HWID`;
+    showToast('⏳ Đang lưu...');
+    const ok = await saveHWIDs();
+    showToast(ok ? '✅ Đã xoá HWID!' : '⚠️ Lưu thất bại!', !ok);
   }
-  if (hwidData.find(x => x.hwid === hwid)) return showToast('HWID đã tồn tại!', true);
-  hwidData.push({ hwid, date });
-  renderList();
-  document.getElementById('newHWID').value = '';
-  showToast('⏳ Đang lưu...');
-  const ok = await saveToPastebin();
-  showToast(ok ? '✅ Thêm HWID thành công!' : '⚠️ Lưu thất bại!', !ok);
-  if (ok) document.getElementById('statusText').textContent = 'Đã kết nối — ' + hwidData.length + ' HWID';
-}
 
-async function removeHWID(i) {
-  if (!confirm('Xoá HWID này?\n' + hwidData[i].hwid)) return;
-  hwidData.splice(i, 1);
-  renderList();
-  showToast('⏳ Đang lưu...');
-  const ok = await saveToPastebin();
-  showToast(ok ? '✅ Đã xoá HWID!' : '⚠️ Lưu thất bại!', !ok);
-  if (ok) document.getElementById('statusText').textContent = 'Đã kết nối — ' + hwidData.length + ' HWID';
-}
-
-async function saveToPastebin() {
-  const apiKey = document.getElementById('apiKey').value.trim();
-  const pasteKey = document.getElementById('pasteKey').value.trim();
-  if (!apiKey || !pasteKey) { showToast('Nhập API key và Paste Key!', true); return false; }
-  const content = hwidData.map(x => x.hwid + '|' + x.date).join('\n');
-  try {
-    const fd = new FormData();
-    fd.append('api_dev_key', apiKey);
-    fd.append('api_option', 'paste');
-    fd.append('api_paste_code', content);
-    fd.append('api_paste_key', pasteKey);
-    fd.append('api_paste_name', 'HWID');
-    await fetch('https://pastebin.com/api/api_post.php', { method: 'POST', body: fd, mode: 'no-cors' });
-    return true;
-  } catch(e) { return false; }
-}
+  loadHWIDs();
 </script>
 </body>
 </html>
